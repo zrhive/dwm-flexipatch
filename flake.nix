@@ -4,21 +4,21 @@
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs =
-    { nixpkgs, ... }:
+    { self, nixpkgs }:
     let
       lib = nixpkgs.lib;
       systems = lib.systems.flakeExposed;
       eachSystem = function: lib.genAttrs systems (system: function (pkgs system));
-      pkgs = system: nixpkgs.legacyPackages.${system};
+      pkgs = system: nixpkgs.legacyPackages.${system}.extend self.overlays.default;
     in
     {
-      packages = eachSystem (pkgs: {
+      overlays.default = _: prev: {
         dwm-flexipatch = pkgs.dwm.overrideAttrs (old: {
           src = ./dwm;
           buildInputs =
             old.buildInputs
             ++ builtins.attrsValues {
-              inherit (pkgs)
+              inherit (prev)
                 libxcursor
                 imlib2
                 libxrender
@@ -26,6 +26,10 @@
                 ;
             };
         });
+      };
+
+      packages = eachSystem (pkgs: {
+        inherit (pkgs) dwm-flexipatch;
       });
     };
 }
