@@ -21,6 +21,8 @@
               inherit (pkgs)
                 libxcursor
                 imlib2
+                libxrender
+                libxext
                 ;
             };
         });
