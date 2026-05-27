@@ -6,14 +6,19 @@
   outputs =
     { self, nixpkgs }:
     let
-      lib = nixpkgs.lib;
+      inherit (nixpkgs) lib;
       systems = lib.systems.flakeExposed;
-      eachSystem = function: lib.genAttrs systems (system: function (pkgs system));
-      pkgs = system: nixpkgs.legacyPackages.${system}.extend self.overlays.default;
+      # eachSystem = function: lib.genAttrs systems (system: function (pkgs system));
+      # pkgs = system: nixpkgs.legacyPackages.${system}.extend self.overlays.default;
+      eachSystem =
+        function:
+        lib.genAttrs systems (
+          system: function nixpkgs.legacyPackages.${system}.extend self.overlays.default
+        );
     in
     {
       overlays.default = _: prev: {
-        dwm-flexipatch = pkgs.dwm.overrideAttrs (old: {
+        dwm-flexipatch = prev.dwm.overrideAttrs (old: {
           src = ./dwm;
           buildInputs =
             old.buildInputs
