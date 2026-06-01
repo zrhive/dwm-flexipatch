@@ -82,7 +82,7 @@ Clr *drw_scm_create(
 );
 
 /* Cursor abstraction */
-Cur *drw_cur_create(Drw *drw, int shape);
+Cur *drw_cur_create(Drw *drw, const char *shape);
 void drw_cur_free(Drw *drw, Cur *cursor);
 
 /* Drawing context manipulation */

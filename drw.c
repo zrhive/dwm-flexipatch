@@ -4,6 +4,7 @@
 #include <string.h>
 #include <X11/Xlib.h>
 #include <X11/Xft/Xft.h>
+#include <X11/Xcursor/Xcursor.h>
 
 #include "patches.h"
 #include "drw.h"
@@ -752,14 +753,14 @@ drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w,
 #endif // BAR_PANGO_PATCH
 
 Cur *
-drw_cur_create(Drw *drw, int shape)
+drw_cur_create(Drw *drw, const char *shape)
 {
 	Cur *cur;
 
 	if (!drw || !(cur = ecalloc(1, sizeof(Cur))))
 		return NULL;
 
-	cur->cursor = XCreateFontCursor(drw->dpy, shape);
+	cur->cursor = XcursorLibraryLoadCursor(drw->dpy, shape);
 
 	return cur;
 }
